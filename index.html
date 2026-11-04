@@ -5,118 +5,543 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#777777">
 <title>SUPERAI Calculator</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Arial,sans-serif;background:#858585;color:#fff;display:grid;place-items:center;padding:18px}
-.screen{width:min(100%,390px)}#intro{position:fixed;inset:0;background:linear-gradient(135deg,#555,#999,#666);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:5;transition:opacity .45s}
-#intro h1{font-size:clamp(48px,14vw,76px);letter-spacing:5px;margin:0;text-shadow:0 5px 18px #3338}#intro p{letter-spacing:4px;color:#eee}
-#enter{margin-top:30px;border:1px solid #ffffff80;background:#ffffff22;color:white;padding:15px 35px;border-radius:14px;font-size:18px;font-weight:bold}
-#calculator{display:none;background:#686868;border:1px solid #aaa;border-radius:25px;padding:18px;box-shadow:0 18px 45px #3337}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px}.brand{font-weight:bold;letter-spacing:2px;color:#eee;font-size:13px}
-#extraButton{width:42px;height:38px;border:1px solid #aaa;border-radius:12px;background:#555;color:#fff;font-size:22px;font-weight:bold;cursor:pointer}
-#converter{display:none;background:#555;border:1px solid #aaa;border-radius:16px;padding:12px;margin:0 0 14px}
-#converter.keypad-mode{min-height:500px}
-#convPad{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}
-#convPad button{border:0;border-radius:10px;min-height:46px;background:#888;color:#fff;font-size:20px;font-weight:bold}
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;font-family:Arial,sans-serif;
+ background:#858585;color:#fff;display:grid;
+ place-items:center;padding:18px
+}
+.screen{width:min(100%,390px)}
+
+#intro{
+ position:fixed;inset:0;
+ background:linear-gradient(135deg,#555,#999,#666);
+ display:flex;flex-direction:column;
+ align-items:center;justify-content:center;
+ z-index:5;transition:opacity .45s
+}
+#intro h1{
+ font-size:clamp(48px,14vw,76px);
+ letter-spacing:5px;margin:0;
+ text-shadow:0 5px 18px #3338
+}
+#intro p{letter-spacing:4px;color:#eee}
+#enter{
+ margin-top:30px;border:1px solid #ffffff80;
+ background:#ffffff22;color:white;
+ padding:15px 35px;border-radius:14px;
+ font-size:18px;font-weight:bold
+}
+
+#calculator{
+ display:none;background:#686868;
+ border:1px solid #aaa;border-radius:25px;
+ padding:18px;box-shadow:0 18px 45px #3337
+}
+.topbar{
+ display:flex;align-items:center;
+ justify-content:space-between;margin-bottom:12px
+}
+.brand{font-weight:bold;letter-spacing:2px;color:#eee;font-size:13px}
+#extraButton{
+ width:42px;height:38px;border:1px solid #aaa;
+ border-radius:12px;background:#555;color:#fff;
+ font-size:22px;font-weight:bold
+}
+
+#converter{
+ display:none;background:#555;border:1px solid #aaa;
+ border-radius:16px;padding:12px;margin-bottom:14px
+}
+#convPad{
+ display:grid;grid-template-columns:repeat(3,1fr);
+ gap:7px;margin-top:12px
+}
+#convPad button{
+ border:0;border-radius:10px;min-height:46px;
+ background:#888;color:#fff;font-size:20px;font-weight:bold
+}
 #convPad button.clear{background:#444}
-#backToCalc{display:none;width:100%;margin-top:10px;padding:11px;border:1px solid #aaa;border-radius:10px;background:#686868;color:#fff;font-weight:bold}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
-.tab{border:0;border-radius:9px;padding:10px 3px;background:#777;color:#fff;font-size:12px;font-weight:bold}
+#backToCalc{
+ display:none;width:100%;margin-top:10px;
+ padding:11px;border:1px solid #aaa;
+ border-radius:10px;background:#686868;color:#fff;
+ font-weight:bold
+}
+
+.tabs{
+ display:grid;grid-template-columns:repeat(3,1fr);
+ gap:6px;margin-bottom:12px
+}
+.tab{
+ border:0;border-radius:9px;padding:10px 3px;
+ background:#777;color:#fff;font-size:12px;font-weight:bold
+}
 .tab.active{background:#333;outline:1px solid #ddd}
 .conv-title{font-weight:bold;margin:4px 0 10px}
-.conv-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.conv-row input,.conv-row select{width:100%;min-width:0;padding:12px;border:1px solid #aaa;border-radius:10px;background:#444;color:#fff;font-size:16px}
-.conv-result{background:#444;border-radius:10px;padding:12px;margin-top:9px;min-height:44px;overflow-wrap:anywhere;font-weight:bold}
-.display{background:#454545;border-radius:15px;min-height:105px;padding:14px;margin-bottom:14px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end;overflow:hidden}
-#expression{font-size:17px;color:#ccc;min-height:22px;overflow-wrap:anywhere;text-align:right}
-#answer{font-size:clamp(28px,9vw,42px);font-weight:750;letter-spacing:-1px;overflow-wrap:anywhere;text-align:right;max-width:100%;line-height:1.15}
+.conv-row{
+ display:grid;grid-template-columns:1fr 1fr;gap:8px
+}
+.conv-row input,.conv-row select{
+ width:100%;min-width:0;padding:12px;
+ border:1px solid #aaa;border-radius:10px;
+ background:#444;color:#fff;font-size:16px
+}
+.conv-result{
+ background:#444;border-radius:10px;
+ padding:12px;margin-top:9px;min-height:44px;
+ overflow-wrap:anywhere;font-weight:bold
+}
+
+.display{
+ background:#454545;border-radius:15px;
+ min-height:105px;padding:14px;margin-bottom:14px;
+ display:flex;flex-direction:column;
+ justify-content:flex-end;align-items:flex-end;
+ overflow:hidden
+}
+#expression{
+ font-size:17px;color:#ccc;min-height:22px;
+ overflow-wrap:anywhere;text-align:right
+}
+#answer{
+ font-size:clamp(28px,9vw,42px);
+ font-weight:750;letter-spacing:-1px;
+ overflow-wrap:anywhere;text-align:right;
+ max-width:100%;line-height:1.15
+}
 #answer.long{font-size:clamp(19px,6vw,28px)}
-.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-button.key{min-width:0;min-height:57px;border:0;border-radius:12px;background:#999;color:#fff;font-size:22px;font-weight:bold;box-shadow:0 3px 0 #555;cursor:pointer;touch-action:manipulation}
-button.key:active,#enter:active{transform:scale(.96)}button.fn{background:#777}button.op{background:#555}button.equal{background:#444}button.wide{grid-column:span 2}
-.note{text-align:center;color:#ddd;font-size:11px;margin:14px 0 0}
+
+/* ИСПРАВЛЕННАЯ СЕТКА: 4 СТОЛБЦА */
+.keys{
+ display:grid;
+ grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:8px
+}
+button.key{
+ min-width:0;min-height:57px;border:0;
+ border-radius:12px;background:#999;color:#fff;
+ font-size:22px;font-weight:bold;
+ box-shadow:0 3px 0 #555;
+ cursor:pointer;touch-action:manipulation
+}
+button.key:active,#enter:active{transform:scale(.96)}
+button.fn{background:#777}
+button.op{background:#555}
+button.equal{background:#444}
+button.wide{grid-column:span 2}
+
+.note{
+ text-align:center;color:#ddd;
+ font-size:11px;margin:14px 0 0
+}
 </style>
 
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#f4b860">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="SUPERAI">
 <link rel="apple-touch-icon" href="icon-192.png">
-
 </head>
-<body>
-<div id="intro"><h1>SUPERAI</h1><p>SMART CALCULATOR</p><button id="enter">ВОЙТИ</button></div>
-<main class="screen"><section id="calculator">
-<div class="topbar"><div class="brand">SUPERAI CALCULATOR</div><button id="extraButton" type="button" aria-label="Открыть измерения">☰</button></div>
-<div id="converter">
-<div class="tabs">
-<button class="tab active" data-tab="weight">Вес</button><button class="tab" data-tab="area">Площадь</button><button class="tab" data-tab="volume">Литры</button>
-</div>
-<div class="conv-title" id="convTitle">Измерение веса</div>
-<div class="conv-row"><input id="convValue" type="number" inputmode="decimal" value="1.6" aria-label="Значение"><select id="convFrom" aria-label="Из единицы"></select></div>
-<div class="conv-row" style="margin-top:8px"><div style="color:#ddd;padding:10px 2px">Перевести в</div><select id="convTo" aria-label="В единицу"></select></div>
-<div class="conv-result" id="convResult">1600 г</div>
-<div id="convPad">
-<button type="button" data-digit="1">1</button><button type="button" data-digit="2">2</button><button type="button" data-digit="3">3</button>
-<button type="button" data-digit="4">4</button><button type="button" data-digit="5">5</button><button type="button" data-digit="6">6</button>
-<button type="button" data-digit="7">7</button><button type="button" data-digit="8">8</button><button type="button" data-digit="9">9</button>
-<button type="button" data-digit="0">0</button><button type="button" data-digit=".">.</button><button type="button" class="clear" id="convClear">ОЧИСТИТЬ</button>
-</div>
-<button type="button" id="backToCalc">← Вернуться к калькулятору</button>
-</div>
-<div class="display" id="calcDisplay"><div id="expression"></div><div id="answer">0</div></div>
-<div class="keys" id="calcKeys">
-<button class="key fn" data-action="clear">AC</button><button class="key fn" data-action="back">⌫</button><button class="key fn" data-action="sqrt">√</button><button class="key op" data-value="÷">÷</button>
-<button class="key" data-value="7">7</button><button class="key" data-value="8">8</button><button class="key" data-value="9">9</button><button class="key op" data-value="×">×</button>
-<button class="key" data-value="4">4</button><button class="key" data-value="5">5</button><button class="key" data-value="6">6</button><button class="key op" data-value="−">−</button>
-<button class="key" data-value="1">1</button><button class="key" data-value="2">2</button><button class="key" data-value="3">3</button><button class="key op" data-value="+">+</button>
-<button class="key wide" data-value="0">0</button><button class="key" data-action="dot">.</button><button class="key equal" data-action="equals">=</button>
-<button class="key fn" data-power="¹">x¹</button><button class="key fn" data-power="²">x²</button><button class="key fn" data-power="³">x³</button><button class="key fn" data-power="⁴">x⁴</button>
-<button class="key fn" data-power="⁵">x⁵</button><button class="key fn" data-power="⁶">x⁶</button><button class="key fn" data-power="⁷">x⁷</button><button class="key fn" data-power="⁸">x⁸</button>
-<button class="key fn" data-power="⁹">x⁹</button><button class="key fn" data-power="⁰">x⁰</button>
-</div><p class="note">SUPERAI · Калькулятор</p></section></main>
-<script>
-const intro=document.getElementById('intro'),calc=document.getElementById('calculator'),answer=document.getElementById('answer'),expression=document.getElementById('expression');
-let input='0',justSolved=false;
-document.getElementById('enter').addEventListener('click',()=>{intro.style.opacity='0';setTimeout(()=>{intro.style.display='none';calc.style.display='block'},450)});
-const converter=document.getElementById('converter'),convValue=document.getElementById('convValue'),convFrom=document.getElementById('convFrom'),convTo=document.getElementById('convTo'),convResult=document.getElementById('convResult'),convTitle=document.getElementById('convTitle');
-const unitSets={
-weight:{title:'Измерение веса',units:[['мг',0.000001],['г',0.001],['кг',1],['т',1000],['Мт',1000000000]]},
-area:{title:'Измерение площади',units:[['мм²',0.000001],['см²',0.0001],['дм²',0.01],['м²',1],['км²',1000000]]},
-volume:{title:'Измерение объёма',units:[['мл',0.001],['л',1],['м³',1000]]},
 
+<body>
+
+<div id="intro">
+ <h1>SUPERAI</h1>
+ <p>SMART CALCULATOR</p>
+ <button id="enter">ВОЙТИ</button>
+</div>
+
+<main class="screen">
+<section id="calculator">
+
+<div class="topbar">
+ <div class="brand">SUPERAI CALCULATOR</div>
+ <button id="extraButton" type="button">☰</button>
+</div>
+
+<div id="converter">
+
+<div class="tabs">
+ <button class="tab active" data-tab="weight">Вес</button>
+ <button class="tab" data-tab="area">Площадь</button>
+ <button class="tab" data-tab="volume">Литры</button>
+</div>
+
+<div class="conv-title" id="convTitle">Измерение веса</div>
+
+<div class="conv-row">
+ <input id="convValue" type="number" inputmode="decimal" value="1.6">
+ <select id="convFrom"></select>
+</div>
+
+<div class="conv-row" style="margin-top:8px">
+ <div style="color:#ddd;padding:10px 2px">Перевести в</div>
+ <select id="convTo"></select>
+</div>
+
+<div class="conv-result" id="convResult">1600 г</div>
+
+<div id="convPad">
+ <button data-digit="1">1</button>
+ <button data-digit="2">2</button>
+ <button data-digit="3">3</button>
+ <button data-digit="4">4</button>
+ <button data-digit="5">5</button>
+ <button data-digit="6">6</button>
+ <button data-digit="7">7</button>
+ <button data-digit="8">8</button>
+ <button data-digit="9">9</button>
+ <button data-digit="0">0</button>
+ <button data-digit=".">.</button>
+ <button class="clear" id="convClear">ОЧИСТИТЬ</button>
+</div>
+
+<button id="backToCalc">← Вернуться к калькулятору</button>
+</div>
+
+<div class="display" id="calcDisplay">
+ <div id="expression"></div>
+ <div id="answer">0</div>
+</div>
+
+<div class="keys" id="calcKeys">
+
+<button class="key fn" data-action="clear">AC</button>
+<button class="key fn" data-action="back">⌫</button>
+<button class="key fn" data-action="sqrt">√</button>
+<button class="key op" data-value="÷">÷</button>
+
+<button class="key" data-value="7">7</button>
+<button class="key" data-value="8">8</button>
+<button class="key" data-value="9">9</button>
+<button class="key op" data-value="×">×</button>
+
+<button class="key" data-value="4">4</button>
+<button class="key" data-value="5">5</button>
+<button class="key" data-value="6">6</button>
+<button class="key op" data-value="−">−</button>
+
+<button class="key" data-value="1">1</button>
+<button class="key" data-value="2">2</button>
+<button class="key" data-value="3">3</button>
+<button class="key op" data-value="+">+</button>
+
+<button class="key wide" data-value="0">0</button>
+<button class="key" data-action="dot">.</button>
+<button class="key equal" data-action="equals">=</button>
+
+<button class="key fn" data-power="¹">x¹</button>
+<button class="key fn" data-power="²">x²</button>
+<button class="key fn" data-power="³">x³</button>
+<button class="key fn" data-power="⁴">x⁴</button>
+
+<button class="key fn" data-power="⁵">x⁵</button>
+<button class="key fn" data-power="⁶">x⁶</button>
+<button class="key fn" data-power="⁷">x⁷</button>
+<button class="key fn" data-power="⁸">x⁸</button>
+
+<button class="key fn" data-power="⁹">x⁹</button>
+<button class="key fn" data-power="⁰">x⁰</button>
+
+</div>
+
+<p class="note">SUPERAI · Калькулятор</p>
+</section>
+</main>
+
+<script>
+const intro=document.getElementById('intro');
+const calc=document.getElementById('calculator');
+const answer=document.getElementById('answer');
+const expression=document.getElementById('expression');
+
+let input='0';
+let justSolved=false;
+
+document.getElementById('enter').addEventListener('click',()=>{
+ intro.style.opacity='0';
+ setTimeout(()=>{
+  intro.style.display='none';
+  calc.style.display='block';
+ },450);
+});
+
+const converter=document.getElementById('converter');
+const convValue=document.getElementById('convValue');
+const convFrom=document.getElementById('convFrom');
+const convTo=document.getElementById('convTo');
+const convResult=document.getElementById('convResult');
+const convTitle=document.getElementById('convTitle');
+
+const unitSets={
+ weight:{
+  title:'Измерение веса',
+  units:[['мг',0.000001],['г',0.001],['кг',1],['т',1000],['Мт',1000000000]]
+ },
+ area:{
+  title:'Измерение площади',
+  units:[['мм²',0.000001],['см²',0.0001],['дм²',0.01],['м²',1],['км²',1000000]]
+ },
+ volume:{
+  title:'Измерение объёма',
+  units:[['мл',0.001],['л',1],['м³',1000]]
+ }
 };
+
 let currentTab='weight';
-function fillUnits(){const d=unitSets[currentTab];convTitle.textContent=d.title;convFrom.innerHTML='';convTo.innerHTML='';d.units.forEach(([u])=>{convFrom.add(new Option(u,u));convTo.add(new Option(u,u));});if(currentTab==='weight'){convFrom.value='кг';convTo.value='г';}else if(currentTab==='area'){convFrom.value='см²';convTo.value='мм²';}else if(currentTab==='volume'){convFrom.value='л';convTo.value='мл';}convertUnits();}
-function convertUnits(){const d=unitSets[currentTab].units,f=d.find(x=>x[0]===convFrom.value),t=d.find(x=>x[0]===convTo.value),n=Number(convValue.value);if(!f||!t||convValue.value===''){convResult.textContent='Введите число';return;}const r=n*f[1]/t[1];convResult.textContent=Number(r.toPrecision(10)).toLocaleString('ru-RU')+' '+t[0];}
-const calcDisplay=document.getElementById('calcDisplay'),calcKeys=document.getElementById('calcKeys'),backToCalc=document.getElementById('backToCalc');
-function showConverter(){converter.style.display='block';calcDisplay.style.display='none';calcKeys.style.display='none';backToCalc.style.display='block';}
-function showCalculator(){converter.style.display='none';calcDisplay.style.display='flex';calcKeys.style.display='grid';backToCalc.style.display='none';}
-document.getElementById('extraButton').addEventListener('click',()=>{if(converter.style.display==='block')showCalculator();else showConverter();});
+
+function fillUnits(){
+ const d=unitSets[currentTab];
+ convTitle.textContent=d.title;
+ convFrom.innerHTML='';
+ convTo.innerHTML='';
+
+ d.units.forEach(([u])=>{
+  convFrom.add(new Option(u,u));
+  convTo.add(new Option(u,u));
+ });
+
+ if(currentTab==='weight'){
+  convFrom.value='кг';
+  convTo.value='г';
+ }else if(currentTab==='area'){
+  convFrom.value='см²';
+  convTo.value='мм²';
+ }else{
+  convFrom.value='л';
+  convTo.value='мл';
+ }
+
+ convertUnits();
+}
+
+function convertUnits(){
+ const d=unitSets[currentTab].units;
+ const f=d.find(x=>x[0]===convFrom.value);
+ const t=d.find(x=>x[0]===convTo.value);
+ const n=Number(convValue.value);
+
+ if(!f||!t||convValue.value===''){
+  convResult.textContent='Введите число';
+  return;
+ }
+
+ const r=n*f[1]/t[1];
+ convResult.textContent=
+  Number(r.toPrecision(10)).toLocaleString('ru-RU')+' '+t[0];
+}
+
+const calcDisplay=document.getElementById('calcDisplay');
+const calcKeys=document.getElementById('calcKeys');
+const backToCalc=document.getElementById('backToCalc');
+
+function showConverter(){
+ converter.style.display='block';
+ calcDisplay.style.display='none';
+ calcKeys.style.display='none';
+ backToCalc.style.display='block';
+}
+
+function showCalculator(){
+ converter.style.display='none';
+ calcDisplay.style.display='flex';
+ calcKeys.style.display='grid';
+ backToCalc.style.display='none';
+}
+
+document.getElementById('extraButton').addEventListener('click',()=>{
+ if(converter.style.display==='block')showCalculator();
+ else showConverter();
+});
+
 backToCalc.addEventListener('click',showCalculator);
+
 document.getElementById('convPad').addEventListener('click',e=>{
- const b=e.target.closest('button[data-digit]');if(!b)return;
+ const b=e.target.closest('button[data-digit]');
+ if(!b)return;
+
  const v=b.dataset.digit;
- if(v==='.' && convValue.value.includes('.'))return;
- convValue.value=(convValue.value==='0' && v!=='.')?v:convValue.value+v;
+
+ if(v==='.'&&convValue.value.includes('.'))return;
+
+ convValue.value=
+  (convValue.value==='0'&&v!=='.')
+  ?v:convValue.value+v;
+
  convertUnits();
 });
-document.getElementById('convClear').addEventListener('click',()=>{convValue.value='0';convertUnits();});
-document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));currentTab=b.dataset.tab;fillUnits();}));
-[convValue,convFrom,convTo].forEach(el=>el.addEventListener('input',convertUnits));[convFrom,convTo].forEach(el=>el.addEventListener('change',convertUnits));fillUnits();
-function show(){answer.textContent=input;answer.classList.toggle('long',input.length>11)}
-function add(v){if(justSolved&&/[0-9.]/.test(v))input='0';justSolved=false;if(input==='0'&&/[0-9]/.test(v))input=v;else input+=v;show()}
-function calculate(){try{const s=input.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-');if(!/^[0-9+\-*/().\s]+$/.test(s))throw Error();const result=Function('"use strict";return ('+s+')')();if(!Number.isFinite(result))throw Error();expression.textContent=input+' =';input=String(Number(result.toPrecision(12)));show();justSolved=true}catch(e){expression.textContent='Ошибка вычисления';input='0';show();justSolved=true}}
-document.querySelector('.keys').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.value!==undefined){add(b.dataset.value);return}if(b.dataset.power){const powers={'⁰':0,'¹':1,'²':2,'³':3,'⁴':4,'⁵':5,'⁶':6,'⁷':7,'⁸':8,'⁹':9},n=Number(input),r=Math.pow(n,powers[b.dataset.power]);expression.textContent=input+b.dataset.power+' =';input=Number.isFinite(r)?String(Number(r.toPrecision(12))):'Ошибка';show();justSolved=true;return}switch(b.dataset.action){case'clear':input='0';expression.textContent='';justSolved=false;show();break;case'back':input=input.length>1?input.slice(0,-1):'0';show();break;case'dot':if(justSolved){input='0';justSolved=false}if(!input.split(/[+\-×÷]/).pop().includes('.'))input+='.';show();break;case'sqrt':{const n=Number(input),r=Math.sqrt(n);expression.textContent='√('+input+') =';input=Number.isFinite(r)?String(Number(r.toPrecision(12))):'Ошибка';show();justSolved=true;break}case'equals':calculate();break}});
-document.addEventListener('keydown',e=>{if(calc.style.display==='none')return;if(/[0-9]/.test(e.key))add(e.key);else if(e.key==='+')add('+');else if(e.key==='-')add('−');else if(e.key==='*')add('×');else if(e.key==='/'){e.preventDefault();add('÷')}else if(e.key==='Enter'||e.key==='=')calculate();else if(e.key==='Backspace'){input=input.length>1?input.slice(0,-1):'0';show()}else if(e.key==='Escape'){input='0';expression.textContent='';show()}else if(e.key==='.'&&!input.includes('.'))add('.')});
+
+document.getElementById('convClear').addEventListener('click',()=>{
+ convValue.value='0';
+ convertUnits();
+});
+
+document.querySelectorAll('.tab').forEach(b=>{
+ b.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>{
+   x.classList.toggle('active',x===b);
+  });
+  currentTab=b.dataset.tab;
+  fillUnits();
+ });
+});
+
+[convValue,convFrom,convTo].forEach(el=>{
+ el.addEventListener('input',convertUnits);
+});
+[convFrom,convTo].forEach(el=>{
+ el.addEventListener('change',convertUnits);
+});
+
+fillUnits();
+
+function show(){
+ answer.textContent=input;
+ answer.classList.toggle('long',input.length>11);
+}
+
+function add(v){
+ if(justSolved&&/[0-9.]/.test(v))input='0';
+ justSolved=false;
+
+ if(input==='0'&&/[0-9]/.test(v))input=v;
+ else input+=v;
+
+ show();
+}
+
+function calculate(){
+ try{
+  const s=input
+   .replace(/×/g,'*')
+   .replace(/÷/g,'/')
+   .replace(/−/g,'-');
+
+  if(!/^[0-9+\-*/().\s]+$/.test(s))throw Error();
+
+  const result=Function('"use strict";return ('+s+')')();
+
+  if(!Number.isFinite(result))throw Error();
+
+  expression.textContent=input+' =';
+  input=String(Number(result.toPrecision(12)));
+  show();
+  justSolved=true;
+
+ }catch(e){
+  expression.textContent='Ошибка вычисления';
+  input='0';
+  show();
+  justSolved=true;
+ }
+}
+
+document.querySelector('.keys').addEventListener('click',e=>{
+ const b=e.target.closest('button');
+ if(!b)return;
+
+ if(b.dataset.value!==undefined){
+  add(b.dataset.value);
+  return;
+ }
+
+ if(b.dataset.power){
+  const powers={
+   '⁰':0,'¹':1,'²':2,'³':3,'⁴':4,
+   '⁵':5,'⁶':6,'⁷':7,'⁸':8,'⁹':9
+  };
+
+  const n=Number(input);
+  const r=Math.pow(n,powers[b.dataset.power]);
+
+  expression.textContent=input+b.dataset.power+' =';
+  input=Number.isFinite(r)
+   ?String(Number(r.toPrecision(12))):'Ошибка';
+
+  show();
+  justSolved=true;
+  return;
+ }
+
+ switch(b.dataset.action){
+
+  case'clear':
+   input='0';
+   expression.textContent='';
+   justSolved=false;
+   show();
+   break;
+
+  case'back':
+   input=input.length>1?input.slice(0,-1):'0';
+   show();
+   break;
+
+  case'dot':
+   if(justSolved){
+    input='0';
+    justSolved=false;
+   }
+   if(!input.split(/[+\-×÷]/).pop().includes('.')){
+    input+='.';
+   }
+   show();
+   break;
+
+  case'sqrt':{
+   const n=Number(input);
+   const r=Math.sqrt(n);
+
+   expression.textContent='√('+input+') =';
+   input=Number.isFinite(r)
+    ?String(Number(r.toPrecision(12))):'Ошибка';
+
+   show();
+   justSolved=true;
+   break;
+  }
+
+  case'equals':
+   calculate();
+   break;
+ }
+});
+
+document.addEventListener('keydown',e=>{
+ if(calc.style.display==='none')return;
+
+ if(/[0-9]/.test(e.key))add(e.key);
+ else if(e.key==='+')add('+');
+ else if(e.key==='-')add('−');
+ else if(e.key==='*')add('×');
+ else if(e.key==='/'){
+  e.preventDefault();
+  add('÷');
+ }
+ else if(e.key==='Enter'||e.key==='=')calculate();
+ else if(e.key==='Backspace'){
+  input=input.length>1?input.slice(0,-1):'0';
+  show();
+ }
+ else if(e.key==='Escape'){
+  input='0';
+  expression.textContent='';
+  show();
+ }
+ else if(e.key==='.'&&!input.includes('.'))add('.');
+});
 </script>
 
 <script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js").catch(() => {});
-  });
+if("serviceWorker" in navigator){
+ window.addEventListener("load",()=>{
+  navigator.serviceWorker.register("./service-worker.js").catch(()=>{});
+ });
 }
 </script>
 
-</body></html>
+</body>
+</html>
